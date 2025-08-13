@@ -1,0 +1,23 @@
+name: testing multiline
+on:
+  push:
+  create:
+  workflow_dispatch:
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup
+        run: |
+          {
+            echo 'FILE_CONTENTS<<EOF'
+            cat multifile
+            echo EOF
+          } >> "$GITHUB_ENV"
+      - name: check
+        run: test "$FILE_CONTENTS" = $'my\nmultiline\nfile'
+      - name: debug
+        if: ${{ failure() }}
+        run: echo "$FILE_CONTENTS"
